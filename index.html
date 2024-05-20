@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astronomia Moderna</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://tm.ibxk.com.br/2016/02/15/15191853192732.jpg?ims=1200x675') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            overflow-x: hidden;
+            transition: background 2s ease-in-out;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        header, footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px 0;
+            text-align: center;
+        }
+        header img {
+            width: 50px;
+            height: auto;
+            vertical-align: middle;
+        }
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        h1, h2 {
+            color: #f9c74f;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            animation: fadeIn 2s ease-in-out;
+        }
+        h1::after, h2::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: #f9c74f;
+            margin: 10px auto;
+            border-radius: 2px;
+        }
+        .content-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            animation: fadeInUp 1s ease-in-out;
+        }
+        .content-section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+        .content-section img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: opacity 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .content-section img:hover {
+            opacity: 0.8;
+        }
+        p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            animation: fadeIn 2s ease-in-out;
+        }
+        footer {
+            margin-top: 20px;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes zoomIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+        .modal-content {
+            margin: 10% auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            animation: zoomIn 0.6s;
+        }
+        .modal-content img {
+            width: 100%;
+            height: auto;
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-text {
+            color: #f9c74f;
+            font-size: 24px;
+            margin-top: 20px;
+            animation: fadeInText 1s ease-in-out infinite alternate;
+        }
+        @keyframes fadeInText {
+            from {
+                opacity: 0.5;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .galaxy {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: url('https://i.pinimg.com/originals/15/70/84/157084787880c1ead98ec92332da7094.gif') no-repeat center center;
+            background-size: contain;
+        }
+        .blackhole {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: url('https://media.tenor.com/wxVBLpumOKMAAAAC/black-hole.gif') no-repeat center center;
+            background-size: contain;
+        }
+        .mute-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            color: #f9c74f;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .intro-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 3000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #f9c74f;
+            font-size: 24px;
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
+        .star {
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            position: absolute;
+            animation: blink 2s infinite;
+        }
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+        .change-bg-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            color: #f9c74f;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="loader" class="loader-wrapper">
+        <div class="galaxy"></div>
+        <div class="loading-text">Carregando...</div>
+    </div>
+    <div id="intro" class="intro-wrapper" style="display: none;">
+        <div class="blackhole"></div>
+        <div>Bem-vindo ao Maravilhoso Universo da Astronomia</div>
+    </div>
+    <header>
+        <img src="https://via.placeholder.com/50" alt="Logo Astronomia">
+        <h1>Bem-vindo ao Maravilhoso Universo da Astronomia</h1>
+    </header>
+    <main>
+        <div class="container">
+            <section class="content-section">
+                <h2>O que é Astronomia?</h2>
+                <p>Astronomia é a ciência que estuda os corpos celestes, incluindo planetas, estrelas, galáxias e o próprio universo como um todo. Trata-se de uma das ciências mais antigas, com registros de observações astronômicas datando de civilizações antigas como os babilônios, gregos e chineses. A astronomia moderna combina observações telescópicas com teorias físicas para entender a natureza do cosmos.</p>
+                <img src="https://tm.ibxk.com.br/2016/02/15/15191853192732.jpg?ims=1200x675" alt="Imagem do Espaço" onclick="openModal(this)">
+            </section>
+            <section class="content-section">
+                <h2>Sistema Solar</h2>
+                <p>O Sistema Solar é composto pelo Sol e todos os corpos celestes que estão sob sua influência gravitacional, incluindo planetas, luas, asteroides e cometas. Vamos explorar algumas das maravilhas do nosso Sistema Solar.</p>
+                <img src="https://img.freepik.com/fotos-premium/sistema-solar-elementos-desta-imagem-fornecidos-pela-nasa_103740-333.jpg" alt="Imagem do Sistema Solar" onclick="openModal(this)">
+            </section>
+            <section class="content-section">
+                <h2>Estrelas</h2>
+                <p>As estrelas são enormes esferas de plasma que emitem luz e calor devido a reações nucleares em seu núcleo. Elas vêm em diferentes tamanhos, cores e idades, cada uma com sua própria história de formação e evolução.</p>
+                <img src="https://static.mundoeducacao.uol.com.br/mundoeducacao/conteudo_legenda/15608814325d09291867ad0-estrelas-pleiades.jpg" alt="Imagem de uma Estrela" onclick="openModal(this)">
+            </section>
+            <section class="content-section">
+                <h2>Galáxias</h2>
+                <p>Galáxias são enormes sistemas de estrelas, gás, poeira e matéria escura, todos ligados pela gravidade. Elas vêm em várias formas e tamanhos, desde galáxias anãs até gigantes como a Via Láctea, nossa galáxia natal.</p>
+                <img src="https://s5.static.brasilescola.uol.com.br/be/2021/09/galaxia-do-triangulo.jpg" alt="Imagem de uma Galáxia" onclick="openModal(this)">
+            </section>
+            <section class="content-section">
+                <h2>Exploração Espacial</h2>
+                <p>A exploração espacial é o uso de astronomia e tecnologia espacial para explorar o espaço sideral. Isso inclui voos espaciais tripulados quanto por espaçonaves robóticas.</p>
+                <img src="https://static.preparaenem.com/conteudo_legenda/91cb988ca3546b0eaa68fbe2fa47f170.jpg" alt="Imagem da Exploração Espacial" onclick="openModal(this)">
+            </section>
+            <section class="content-section">
+                <h2>Astrobiologia</h2>
+                <p>Astrobiologia é o estudo da vida no universo. Isso inclui a busca por vida extraterrestre e o estudo das condições que podem ter levado ao surgimento da vida na Terra.</p>
+                <img src="https://i0.statig.com.br/bancodeimagens/0w/x5/s5/0wx5s5exuu2z7tjw5a4y0wtwx.jpg" alt="Imagem de Astrobiologia" onclick="openModal(this)">
+            </section>
+            <section class="content-section">
+                <h2>Cosmologia</h2>
+                <p>Cosmologia é o estudo da origem, evolução e eventual destino do universo. Isso inclui teorias como o Big Bang e a expansão do universo.</p>
+                <img src="https://s5.static.brasilescola.uol.com.br/be/conteudo/images/nebulosa-carina.jpg" alt="Imagem de Cosmologia" onclick="openModal(this)">
+            </section>
+            <section class="content-section">
+                <h2>Buracos Negros</h2>
+                <p>Buracos negros são regiões do espaço onde a gravidade é tão forte que nada, nem mesmo a luz, pode escapar. Eles são formados quando estrelas massivas colapsam sob sua própria gravidade no final de seu ciclo de vida. Buracos negros são objetos fascinantes que desafiam nosso entendimento da física.</p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Black_hole_-_Messier_87_crop_max_res.jpg/800px-Black_hole_-_Messier_87_crop_max_res.jpg" alt="Imagem de um Buraco Negro" onclick="openModal(this)">
+            </section>
+            <section class="content-section">
+                <h2>Teorias da Criação do Universo</h2>
+                <p>Existem várias teorias sobre a criação do universo, sendo a mais aceita a teoria do Big Bang, que propõe que o universo começou como um ponto extremamente quente e denso que se expandiu rapidamente. Outras teorias incluem o estado estacionário e o modelo do universo oscilante.</p>
+                <img src="https://s4.static.brasilescola.uol.com.br/be/2022/05/big-bang.jpg" alt="Imagem da Teoria do Big Bang" onclick="openModal(this)">
+            </section>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Astronomia Moderna</p>
+    </footer>
+
+    <div id="myModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <img id="modalImg">
+        </div>
+    </div>
+
+    <button class="mute-button" onclick="toggleAudio()">🔊 Mute</button>
+    <button class="change-bg-button" onclick="changeBackground()">🖼️ Mudar Fundo</button>
+    <audio id="backgroundAudio" loop>
+        <source src="file:///C:/Users/Gabe/Downloads/Astronomia%20Todo%20Dia.mp3" type="audio/mpeg">
+        Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var loader = document.getElementById('loader');
+            var intro = document.getElementById('intro');
+            var mainContent = document.querySelector('main');
+            var header = document.querySelector('header');
+            var sections = document.querySelectorAll('.content-section');
+            var paragraphs = document.querySelectorAll('p');
+            var headings = document.querySelectorAll('h1, h2');
+            var audio = document.getElementById('backgroundAudio');
+
+            for (let i = 0; i < 100; i++) {
+                let star = document.createElement('div');
+                star.classList.add('star');
+                star.style.top = Math.random() * 100 + '%';
+                star.style.left = Math.random() * 100 + '%';
+                intro.appendChild(star);
+            }
+
+            setTimeout(function() {
+                loader.style.display = 'none';
+                intro.style.display = 'flex';
+                setTimeout(function() {
+                    intro.style.opacity = '0';
+                    setTimeout(function() {
+                        intro.style.display = 'none';
+                        mainContent.style.opacity = '1';
+                        header.style.opacity = '1';
+                        headings.forEach(heading => heading.style.opacity = '1');
+                        sections.forEach(section => section.style.opacity = '1');
+                        paragraphs.forEach(paragraph => paragraph.style.opacity = '1');
+                    }, 1000);
+                }, 5000); 
+            }, 5000); 
+        });
+
+        function openModal(element) {
+            var modal = document.getElementById('myModal');
+            var modalImg = document.getElementById('modalImg');
+            modal.style.display = "block";
+            modalImg.src = element.src;
+        }
+
+        function closeModal() {
+            var modal = document.getElementById('myModal');
+            modal.style.display = "none";
+        }
+
+        function toggleAudio() {
+            var audio = document.getElementById('backgroundAudio');
+            var muteButton = document.querySelector('.mute-button');
+            if (audio.paused) {
+                audio.play();
+                muteButton.innerHTML = "🔊 Mute";
+            } else {
+                audio.pause();
+                muteButton.innerHTML = "🔇 Unmute";
+            }
+        }
+
+        function changeBackground() {
+            var body = document.querySelector('body');
+            var currentBackground = body.style.backgroundImage;
+            var newBackground = currentBackground.includes('tm.ibxk.com.br') ? 'url("https://media1.tenor.com/m/XOJyPTMOUT8AAAAd/cosmos-universo.gif")' : 'url("https://tm.ibxk.com.br/2016/02/15/15191853192732.jpg?ims=1200x675")';
+            body.style.backgroundImage = newBackground;
+        }
+    </script>
+</body>
+</html>
